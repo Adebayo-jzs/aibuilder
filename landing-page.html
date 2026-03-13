@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagen — AI Landing Page Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2ED;
+    --surface: #FEFCF9;
+    --ink: #1A1714;
+    --ink-muted: #6B6460;
+    --ink-faint: #B8B2AB;
+    --accent: #E8521A;
+    --accent-soft: #FFF0EA;
+    --accent-2: #2D5BE3;
+    --accent-2-soft: #EEF2FF;
+    --border: rgba(26,23,20,0.08);
+    --shadow-sm: 0 1px 3px rgba(26,23,20,0.06), 0 1px 2px rgba(26,23,20,0.04);
+    --shadow-md: 0 4px 16px rgba(26,23,20,0.08), 0 2px 6px rgba(26,23,20,0.04);
+    --shadow-lg: 0 20px 60px rgba(26,23,20,0.12), 0 8px 20px rgba(26,23,20,0.06);
+    --r: 14px;
+    --r-lg: 24px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%; height: 64px;
+    background: rgba(245,242,237,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem; letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--ink-muted);
+    font-size: 0.9rem; font-weight: 450;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 9px 22px; font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; transition: background .2s, transform .15s;
+    font-family: inherit;
+  }
+  .nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 5% 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,82,26,0.12) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    animation: drift1 12s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(45,91,227,0.10) 0%, transparent 70%);
+    bottom: 0; right: -80px;
+    animation: drift2 15s ease-in-out infinite;
+  }
+  .orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,82,26,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
+  @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
+  @keyframes pulse { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.2)} }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 0.78rem; font-weight: 500; color: var(--ink-muted);
+    margin-bottom: 32px; box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.8s ease both;
+  }
+  .badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    animation: blink 2s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .hero-h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1.0; letter-spacing: -0.03em;
+    max-width: 900px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero-h1 em {
+    font-style: italic; color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--ink-muted); max-width: 520px;
+    line-height: 1.7; font-weight: 350;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn-primary {
+    background: var(--ink); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 15px 32px; font-size: 1rem; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    box-shadow: 0 4px 20px rgba(26,23,20,0.20);
+    transition: all .25s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,82,26,0.35); }
+  .btn-secondary {
+    background: transparent; color: var(--ink);
+    border: 1.5px solid var(--border); border-radius: 100px;
+    padding: 14px 28px; font-size: 1rem; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all .25s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  .hero-visual {
+    margin-top: 72px; position: relative;
+    animation: fadeUp 0.9s 0.6s ease both;
+    width: 100%; max-width: 900px;
+  }
+
+  .browser-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.5) inset;
+  }
+  .browser-bar {
+    background: #EFECE7;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dot-r { background: #FF5F57; }
+  .dot-y { background: #FFBD2E; }
+  .dot-g { background: #28CA41; }
+  .browser-url {
+    flex: 1; background: var(--surface);
+    border-radius: 6px; padding: 5px 12px;
+    font-size: 0.75rem; color: var(--ink-muted);
+    border: 1px solid var(--border); text-align: left;
+  }
+  .browser-content {
+    padding: 32px;
+    background: linear-gradient(160deg, #fff 0%, #F9F6F1 100%);
+    min-height: 280px;
+    display: grid; grid-template-columns: 1fr 2fr; gap: 20px;
+  }
+  .mock-sidebar { display: flex; flex-direction: column; gap: 10px; }
+  .mock-block {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px;
+    font-size: 0.75rem; color: var(--ink-muted);
+  }
+  .mock-block.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .mock-icon { font-size: 1rem; margin-bottom: 4px; }
+  .mock-main { display: flex; flex-direction: column; gap: 14px; }
+  .mock-hero-preview {
+    background: linear-gradient(135deg, #1A1714 0%, #3D3530 100%);
+    border-radius: 10px;
+    padding: 28px;
+    color: #fff;
+  }
+  .mock-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem; line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .mock-sub { font-size: 0.72rem; opacity: .6; margin-bottom: 14px; }
+  .mock-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff; border-radius: 100px;
+    padding: 6px 14px; font-size: 0.72rem; font-weight: 500;
+  }
+  .mock-features {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .mock-feat {
+    background: var(--bg); border-radius: 8px;
+    padding: 10px; border: 1px solid var(--border);
+  }
+  .mock-feat-title { font-size: 0.72rem; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .mock-feat-text { font-size: 0.65rem; color: var(--ink-muted); }
+
+  /* ── SHARED SECTION STYLES ── */
+  section { padding: 100px 5%; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 20px; height: 2px; background: var(--accent);
+    border-radius: 1px;
+  }
+  .section-h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1; letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+  .section-h2 em { font-style: italic; color: var(--accent); }
+  .section-sub {
+    font-size: 1.05rem; color: var(--ink-muted);
+    max-width: 520px; line-height: 1.7; font-weight: 350;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── FEATURES ── */
+  .features { background: var(--surface); }
+  .features-header { margin-bottom: 60px; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .feat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    transition: all .3s;
+    position: relative; overflow: hidden;
+  }
+  .feat-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 60%);
+    opacity: 0; transition: opacity .3s;
+  }
+  .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(232,82,26,0.2); }
+  .feat-card:hover::before { opacity: 1; }
+  .feat-icon {
+    width: 44px; height: 44px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+  .feat-title {
+    font-weight: 600; font-size: 1.05rem;
+    margin-bottom: 8px; position: relative; z-index: 1;
+  }
+  .feat-text {
+    color: var(--ink-muted); font-size: 0.9rem; line-height: 1.6;
+    font-weight: 350; position: relative; z-index: 1;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how { background: var(--bg); }
+  .how-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step:hover .step-content h3 { color: var(--accent); }
+  .step-num {
+    width: 36px; height: 36px; min-width: 36px;
+    border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 600; color: var(--ink-muted);
+    margin-top: 2px; transition: all .2s;
+  }
+  .step:hover .step-num {
+    background: var(--accent); border-color: var(--accent);
+    color: #fff;
+  }
+  .step-content h3 {
+    font-weight: 600; font-size: 1rem; margin-bottom: 4px;
+    transition: color .2s;
+  }
+  .step-content p {
+    font-size: 0.88rem; color: var(--ink-muted); line-height: 1.6; font-weight: 350;
+  }
+
+  .how-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .how-visual-header {
+    padding: 16px 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem; font-weight: 600; color: var(--ink-muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #28CA41; }
+  .ai-chat { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .chat-bubble {
+    max-width: 85%; padding: 12px 16px;
+    border-radius: 16px; font-size: 0.85rem; line-height: 1.5;
+  }
+  .chat-user {
+    background: var(--ink); color: #fff;
+    border-radius: 16px 16px 4px 16px;
+    align-self: flex-end;
+  }
+  .chat-ai {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px 16px 16px 4px;
+    align-self: flex-start;
+  }
+  .chat-ai-name {
+    font-size: 0.7rem; font-weight: 600; color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .chat-generating {
+    display: flex; gap: 5px; align-items: center; padding: 4px 0;
+  }
+  .gen-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink-faint);
+    animation: bounce 1.2s ease infinite;
+  }
+  .gen-dot:nth-child(2) { animation-delay: .2s; }
+  .gen-dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes bounce { 0%,80%,100%{transform:scale(.8);opacity:.4} 40%{transform:scale(1);opacity:1} }
+  .progress-bar {
+    height: 3px; background: var(--border);
+    border-radius: 2px; overflow: hidden; margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    width: 72%;
+    border-radius: 2px;
+    animation: grow 3s ease infinite;
+  }
+  @keyframes grow { 0%{width:15%} 100%{width:95%} }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--ink); color: #fff; }
+  .testimonials .section-label { color: #E8521A; }
+  .testimonials .section-label::before { background: var(--accent); }
+  .testimonials .section-h2 { color: #fff; }
+  .testimonials .section-sub { color: rgba(255,255,255,0.5); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; margin-top: 60px;
+  }
+  .testi-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--r-lg); padding: 32px;
+    transition: all .3s;
+  }
+  .testi-card:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-4px);
+    border-color: rgba(232,82,26,0.3);
+  }
+  .testi-stars { color: var(--accent); font-size: 0.85rem; margin-bottom: 16px; letter-spacing: 2px; }
+  .testi-quote {
+    font-size: 0.95rem; line-height: 1.7;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 24px;
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.05rem;
+  }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; color: #fff;
+  }
+  .testi-name { font-weight: 600; font-size: 0.9rem; color: #fff; }
+  .testi-role { font-size: 0.78rem; color: rgba(255,255,255,0.4); }
+
+  /* ── PRICING ── */
+  .pricing { background: var(--surface); }
+  .pricing-header { text-align: center; margin-bottom: 60px; }
+  .pricing-header .section-label { justify-content: center; }
+  .pricing-header .section-label::before { display: none; }
+  .pricing-header .section-sub { margin: 0 auto; text-align: center; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; max-width: 960px; margin: 0 auto;
+  }
+  .price-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 36px;
+    position: relative; transition: all .3s;
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .price-card.featured {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+  .price-card.featured .price-name { color: rgba(255,255,255,0.6); }
+  .price-card.featured .price-desc { color: rgba(255,255,255,0.5); }
+  .price-card.featured .price-feat-item { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.08); }
+  .price-card.featured .price-feat-check { color: var(--accent); }
+  .popular-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff;
+    border-radius: 100px; padding: 4px 14px;
+    font-size: 0.72rem; font-weight: 600; white-space: nowrap;
+  }
+  .price-name { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 12px; }
+  .price-amount {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem; line-height: 1; letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+  .price-amount sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+  .price-period { font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 12px; }
+  .price-desc { font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 28px; line-height: 1.5; }
+  .price-btn {
+    width: 100%; padding: 13px;
+    border-radius: 100px; font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all .25s; margin-bottom: 28px;
+  }
+  .price-btn-outline {
+    background: transparent; color: var(--ink);
+    border: 1.5px solid var(--border);
+  }
+  .price-btn-outline:hover { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .price-btn-solid {
+    background: var(--accent); color: #fff; border: none;
+    box-shadow: 0 4px 16px rgba(232,82,26,0.35);
+  }
+  .price-btn-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,82,26,0.45); }
+  .price-feats { display: flex; flex-direction: column; gap: 0; }
+  .price-feat-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.88rem; color: var(--ink-muted);
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+  }
+  .price-feat-item:last-child { border-bottom: none; }
+  .price-feat-check { color: var(--accent); font-size: 0.85rem; }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: var(--bg);
+    text-align: center; padding: 120px 5%;
+  }
+  .cta-box {
+    max-width: 700px; margin: 0 auto;
+    background: var(--ink);
+    border-radius: 28px;
+    padding: 72px 48px;
+    position: relative; overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none;
+  }
+  .cta-glow-1 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,82,26,0.25) 0%, transparent 70%);
+    top: -100px; left: -60px;
+  }
+  .cta-glow-2 {
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(45,91,227,0.2) 0%, transparent 70%);
+    bottom: -80px; right: -40px;
+  }
+  .cta-box h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #fff; letter-spacing: -0.025em; line-height: 1.15;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .cta-box h2 em { font-style: italic; color: var(--accent); }
+  .cta-box p {
+    color: rgba(255,255,255,0.5); font-size: 1rem; line-height: 1.7;
+    margin-bottom: 36px; font-weight: 350;
+    position: relative; z-index: 1;
+  }
+  .cta-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .btn-cta-main {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 100px; padding: 15px 32px;
+    font-size: 1rem; font-weight: 500; cursor: pointer; font-family: inherit;
+    box-shadow: 0 4px 20px rgba(232,82,26,0.4);
+    transition: all .25s;
+  }
+  .btn-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,82,26,0.55); }
+  .btn-cta-ghost {
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: 100px; padding: 14px 28px;
+    font-size: 1rem; font-weight: 500; cursor: pointer; font-family: inherit;
+    transition: all .25s;
+  }
+  .btn-cta-ghost:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.22); }
+  .cta-note { margin-top: 16px; font-size: 0.82rem; color: rgba(255,255,255,0.3); position: relative; z-index: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); padding: 32px 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-logo {
+    font-family: 'Instrument Serif', serif;
+    color: rgba(255,255,255,0.6); font-size: 1.1rem;
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+  footer p { font-size: 0.8rem; color: rgba(255,255,255,0.25); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .how-inner { grid-template-columns: 1fr; gap: 40px; }
+    .browser-content { grid-template-columns: 1fr; }
+    .mock-sidebar { display: none; }
+    .cta-box { padding: 48px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">pagen<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <button class="nav-cta">Start free →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb-1"></div>
+  <div class="hero-orb orb-2"></div>
+  <div class="hero-orb orb-3"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Powered by GPT-4o · No code required
+  </div>
+
+  <h1 class="hero-h1">
+    Your landing page,<br>
+    built in <em>30 seconds</em>
+  </h1>
+
+  <p class="hero-sub">
+    Describe your product in plain English. Pagen's AI writes the copy, picks the layout, and ships a stunning page — instantly.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-primary">Build my page free →</button>
+    <button class="btn-secondary">▶ Watch 60s demo</button>
+  </div>
+
+  <div class="hero-visual">
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots">
+          <span class="dot-r"></span>
+          <span class="dot-y"></span>
+          <span class="dot-g"></span>
+        </div>
+        <div class="browser-url">app.pagen.ai/generate</div>
+      </div>
+      <div class="browser-content">
+        <div class="mock-sidebar">
+          <div class="mock-block active">
+            <div class="mock-icon">✦</div>
+            Hero
+          </div>
+          <div class="mock-block">
+            <div class="mock-icon">⊞</div>
+            Features
+          </div>
+          <div class="mock-block">
+            <div class="mock-icon">◈</div>
+            Pricing
+          </div>
+          <div class="mock-block">
+            <div class="mock-icon">◎</div>
+            CTA
+          </div>
+        </div>
+        <div class="mock-main">
+          <div class="mock-hero-preview">
+            <div class="mock-headline">The future of work<br>starts here.</div>
+            <div class="mock-sub">AI-powered productivity tools for teams.</div>
+            <div class="mock-btn">Get started free</div>
+          </div>
+          <div class="mock-features">
+            <div class="mock-feat">
+              <div class="mock-feat-title">⚡ Instant generation</div>
+              <div class="mock-feat-text">Page ready in under 30s</div>
+            </div>
+            <div class="mock-feat">
+              <div class="mock-feat-title">🎨 Smart design</div>
+              <div class="mock-feat-text">Adapts to your brand</div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-header reveal">
+    <div class="section-label">Features</div>
+    <h2 class="section-h2">Everything the AI handles<br>so you <em>don't have to</em></h2>
+    <p class="section-sub">From first prompt to live URL — the entire creative and technical stack, automated.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card reveal">
+      <div class="feat-icon">✦</div>
+      <div class="feat-title">AI Copywriting</div>
+      <p class="feat-text">Compelling headlines, benefit-driven body copy, and persuasive CTAs — all generated from a single sentence.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">⊞</div>
+      <div class="feat-title">Layout Intelligence</div>
+      <p class="feat-text">The AI picks the optimal section order and visual hierarchy based on your goal — capture, convert, or inform.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">◈</div>
+      <div class="feat-title">Brand Matching</div>
+      <p class="feat-text">Paste your logo URL or describe your brand. Pagen extracts colors, tone, and style automatically.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">One-click Publishing</div>
+      <p class="feat-text">Deploy to a custom subdomain in milliseconds. Connect your own domain with two DNS records.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">◎</div>
+      <div class="feat-title">A/B Variants</div>
+      <p class="feat-text">Generate 3 headline variants and let real traffic decide the winner. No guesswork, no dev time.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">▲</div>
+      <div class="feat-title">Analytics Built-in</div>
+      <p class="feat-text">Conversion rate, scroll depth, and click heatmaps ship with every page. No third-party tags needed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div>
+      <div class="section-label reveal">How it works</div>
+      <h2 class="section-h2 reveal">Live in <em>three steps.</em><br>Seriously.</h2>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Describe your product</h3>
+            <p>Type a sentence or two about what you're building, who it's for, and what action you want visitors to take.</p>
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Review & refine with AI</h3>
+            <p>The AI generates a full page draft. Chat with it to tweak sections, swap layouts, or rewrite copy in seconds.</p>
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Publish and grow</h3>
+            <p>Hit publish. Your page is live, indexed, and collecting leads — with analytics tracking from day one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="how-visual reveal">
+      <div class="how-visual-header">
+        <span class="status-dot"></span>
+        Pagen AI · Generating your page…
+      </div>
+      <div class="ai-chat">
+        <div class="chat-bubble chat-user">
+          A SaaS tool that helps freelancers track time and send invoices. Target: designers & developers. Goal: free trial signups.
+        </div>
+        <div class="chat-bubble chat-ai">
+          <div class="chat-ai-name">Pagen AI</div>
+          Got it! Crafting a high-converting landing page for your time-tracking & invoicing tool. Focusing on pain points: chasing payments, manual logging, scope creep.
+          <div class="chat-generating">
+            <div class="gen-dot"></div>
+            <div class="gen-dot"></div>
+            <div class="gen-dot"></div>
+          </div>
+        </div>
+        <div class="chat-bubble chat-ai">
+          <div class="chat-ai-name">Pagen AI</div>
+          ✅ Hero: "Stop chasing invoices. Start chasing ideas."<br>✅ 5 feature cards generated<br>✅ Pricing section — 3 tiers<br>✅ Social proof — 3 testimonials<br>
+          <strong>Your page is ready to preview →</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="reveal">
+    <div class="section-label">Testimonials</div>
+    <h2 class="section-h2">Loved by <em>builders</em><br>who ship fast</h2>
+    <p class="section-sub">Thousands of founders, makers, and marketers have launched with Pagen.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"I went from idea to a live landing page in 22 minutes. My previous record was a week. I'm never going back."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background: linear-gradient(135deg,#E8521A,#c73e08)">AK</div>
+        <div>
+          <div class="testi-name">Amir Khalil</div>
+          <div class="testi-role">Indie founder · ProductHunt #1</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"The copy it writes is genuinely better than what our content team produces. It understands positioning on a deep level."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background: linear-gradient(135deg,#2D5BE3,#1a3db3)">SM</div>
+        <div>
+          <div class="testi-name">Sara Müller</div>
+          <div class="testi-role">Head of Growth · Fintech startup</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">"We ran an A/B test — Pagen's AI variant beat our hand-crafted page by 34% conversion. The data speaks for itself."</div>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background: linear-gradient(135deg,#1A1714,#4a3f3a)">JR</div>
+        <div>
+          <div class="testi-name">James Ruiz</div>
+          <div class="testi-role">Marketing Lead · B2B SaaS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-header reveal">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-h2">Simple pricing,<br><em>zero surprises</em></h2>
+    <p class="section-sub">Start free. Scale as you grow. Cancel any time.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-name">Starter</div>
+      <div class="price-amount"><sup>$</sup>0</div>
+      <div class="price-period">forever free</div>
+      <div class="price-desc">Perfect for testing your idea and getting your first page live.</div>
+      <button class="price-btn price-btn-outline">Get started</button>
+      <div class="price-feats">
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> 3 pages</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> AI copywriting</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> pagen.ai subdomain</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Basic analytics</div>
+        <div class="price-feat-item" style="opacity:.4"><span>—</span> Custom domain</div>
+        <div class="price-feat-item" style="opacity:.4"><span>—</span> A/B testing</div>
+      </div>
+    </div>
+    <div class="price-card featured reveal">
+      <div class="popular-badge">Most popular</div>
+      <div class="price-name">Pro</div>
+      <div class="price-amount"><sup>$</sup>29</div>
+      <div class="price-period">per month</div>
+      <div class="price-desc">For founders and marketers who need to move fast without trade-offs.</div>
+      <button class="price-btn price-btn-solid">Start free trial</button>
+      <div class="price-feats">
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Unlimited pages</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> AI copywriting + variants</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Custom domain</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Advanced analytics</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> A/B testing</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Priority support</div>
+      </div>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-name">Team</div>
+      <div class="price-amount"><sup>$</sup>79</div>
+      <div class="price-period">per month</div>
+      <div class="price-desc">Collaborate, manage clients, and white-label with your own branding.</div>
+      <button class="price-btn price-btn-outline">Contact sales</button>
+      <div class="price-feats">
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Everything in Pro</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> 5 team seats</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> White-label</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Client workspaces</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> API access</div>
+        <div class="price-feat-item"><span class="price-feat-check">✓</span> Dedicated CSM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="cta-box reveal">
+    <div class="cta-glow cta-glow-1"></div>
+    <div class="cta-glow cta-glow-2"></div>
+    <h2>Your page won't build<br>itself. <em>But we will.</em></h2>
+    <p>Join 12,000+ builders who launched faster with Pagen. No design skills needed — just a great idea.</p>
+    <div class="cta-actions">
+      <button class="btn-cta-main">Build my page free →</button>
+      <button class="btn-cta-ghost">See examples</button>
+    </div>
+    <p class="cta-note">No credit card · Live in 30 seconds · Cancel anytime</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">pagen<span>.</span></a>
+  <p>© 2025 Pagen Inc. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        // stagger siblings in the same parent
+        const siblings = entry.target.parentElement.querySelectorAll('.reveal:not(.visible)');
+        let delay = 0;
+        siblings.forEach(sib => {
+          if (sib === entry.target) {
+            setTimeout(() => sib.classList.add('visible'), delay);
+          }
+          delay += 60;
+        });
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
